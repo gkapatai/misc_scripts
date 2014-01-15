@@ -84,7 +84,7 @@ def read_pileup(pileup_file,ref_seq):
 				orig_depth = int(fields[3])
 				if nuc_num != ref_pos+1:
 					for i in range(ref_pos, nuc_num-1):
-						hash_alignment[allele].append([i+1, ref_seq[i], 0, 0, 0, 0, 'None', alt_bps, []])
+						hash_alignment[allele].append([i+1, ref_seq[allele][i], 0, 0, 0, 0, 'None', alt_bps, []])
 					ref_pos = nuc_num-1			# filter reads based on Phred scores - cutoff Q20 and calculate matches and mismatches
 				if orig_depth != 0:
 					orig_match, orig_mismatch, nuc_match,nuc_mismatch, total_indels, alt_bps, report_insertions= pileup_extract_information(nuc_ref, fields[4], fields[5])
@@ -94,7 +94,7 @@ def read_pileup(pileup_file,ref_seq):
 						print "Line: {0}".format(fields)
 					elif nuc_num != ref_pos+1:
 						for i in range(ref_pos, nuc_num):
-							hash_alignment[allele].append([i+1, ref_seq[i], 0, 0, 0, 0, 'None', alt_bps, []])
+							hash_alignment[allele].append([i+1, ref_seq[allele][i], 0, 0, 0, 0, 'None', alt_bps, []])
 						hash_alignment[allele].append([nuc_num, nuc_ref, orig_depth, nuc_match, nuc_mismatch, nuc_depth, total_indels, alt_bps, report_insertions])
 						ref_pos = nuc_num
 					else:
@@ -300,14 +300,16 @@ def main():
 
 	pileup_file = os.path.basename(_args.input)
 	sample =os.path.splitext(os.path.basename(pileup_file))[0]
-
-	ref_seq = SeqIO.read(_args.reference, "fasta")
-	size = len(ref_seq.seq)
-	hash_alignment = read_pileup(pileup_file,ref_seq.seq)
+        handle  = open(_args.reference, "rU")
+        ref_seqs = {}
+        for record in SeqIO.parse(handle, "fasta"):
+            ref_seqs[record.id] = record.seq
+	#size = len(ref_seq.seq)
+	hash_alignment = read_pileup(pileup_file,ref_seqs)
 	records =[]
 	for allele in hash_alignment.keys():
 		consensus = generate_consensus(hash_alignment[allele])
-		record = SeqRecord(Seq(consensus, generic_dna), id="{0}".format(sample), description = "{0} C. difficile; Consensus from pileup".format(allele))
+		record = SeqRecord(Seq(consensus, generic_dna), id="{0}".format(sample), description = "{0}; Consensus from {1}".format(allele, pileup_file))
 		records.append(record)
 	SeqIO.write(records, '{outdir}/{sample}.fa'.format(outdir=outdir, sample=sample), "fasta")
 
@@ -315,3 +317,5 @@ def main():
 if __name__ == "__main__":
 	Parse_Commandline()
 	main()
+
+#pileup2fasta.py
