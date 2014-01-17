@@ -1,0 +1,18 @@
+Pairwise string alignment in Python.
+
+The version by alevchuk was further adapted to work with
+output from pileup2fasta.py by gkapatai 2014-01-16
+
+This script was originally adapted by alevchuk 2011-04-10
+https://github.com/alevchuk/pairwise-alignment-in-python
+Contibutions include:
+ * Code cleanup
+ * Support of arbitrary alphabets of input strings (no similarity matrix)
+ * Support of both variants:
+   1. Smith-Waterman = local alignment
+   2. Needleman-Wunsch = global alignment
+ 
+Original Smith-Waterman implementation in Python was forked from
+http://forrestbao.blogspot.co.uk/2007/09/smith-waterman-algorithm-in-process.html
+by Forrest Sheng Bao http://fsbao.net
+a free software licensed under GNU General Public License (GPL)
