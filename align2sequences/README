@@ -16,3 +16,5 @@ Original Smith-Waterman implementation in Python was forked from
 http://forrestbao.blogspot.co.uk/2007/09/smith-waterman-algorithm-in-process.html
 by Forrest Sheng Bao http://fsbao.net
 a free software licensed under GNU General Public License (GPL)
+
+A copy of GPL version 3 has been placed into the file LICENSE.
